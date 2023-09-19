@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Perfil de {{ current_user.username }}</h2>
+    <img src="{{ image_file }}" alt="{{ current_user.username }}'s Avatar" class="rounded-circle" width="150">
+    <p>Posts publicados: {{ post_count }}</p>
+
+    <form method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        {{ form.avatar.label }} {{ form.avatar() }}
+        {{ form.submit() }}
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{{ post.title }}</h2>
+    <p>{{ post.content }}</p>
+
+    <!-- Formulario para agregar comentario -->
+    {% if current_user.is_authenticated %}
+    <div class="my-4">
+        <h5>Agregar Comentario</h5>
+        <form action="{{ url_for('post_detail', post_id=post.id) }}" method="post">
+            <div class="form-group">
+                <textarea name="comment_text" class="form-control" placeholder="Escribe tu comentario aquí..." rows="4"></textarea>
+            </div>
+            <div class="form-group mt-2">
+                <button type="submit" class="btn btn-primary">Comentar</button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+
+    <!-- Listado de comentarios -->
+    <div class="my-4">
+        <h5>Comentarios:</h5>
+        {% for comment in comments %}
+        <div class="card mb-2">
+            <div class="card-body">
+                <p>{{ comment.texto }}</p>
+                <small>Comentado por: {{ comment.author.username }} el {{ comment.date_created.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+                
+                <!-- Botón para dar "like" al comentario -->
+                {% if current_user.is_authenticated %}
+                <form action="{{ url_for('like_comment', comment_id=comment.id) }}" method="post" class="d-inline-block ml-3">
+                    <button type="submit" class="btn btn-sm {{ current_user in comment.liked_by and 'btn-primary' or 'btn-outline-primary' }}">
+                        Like ({{ comment.liked_by|length }})
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

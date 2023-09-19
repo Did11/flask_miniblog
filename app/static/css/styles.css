@@ -1,0 +1,58 @@
+.navbar-brand img {
+    height: 50px;
+    width: auto;
+}
+
+/* General */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa; /* Un ligero color de fondo para todo el cuerpo del sitio */
+}
+
+.container {
+    max-width: 800px; /* Hace que el contenedor no sea demasiado ancho para lectura */
+}
+
+/* Encabezados */
+h1, h2, h3, h4, h5 {
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Tarjetas de las entradas */
+.card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1); /* Una sutil sombra para las tarjetas */
+    transition: 0.3s;
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2); /* Una sombra más pronunciada cuando se pasa el mouse por encima */
+}
+
+.card-title {
+    font-weight: bold; /* Hace que el título de la tarjeta sea negrita */
+}
+
+.card-text {
+    color: #6c757d; /* Un color gris más ligero para el texto de la tarjeta */
+}
+
+/* Botones */
+.btn-primary {
+    background-color: #007bff; /* Puedes ajustar este color si quieres un tono diferente de azul para los botones */
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Un tono de azul más oscuro cuando se pasa el mouse por encima del botón */
+    border: none;
+}
+
+/* Footer (Si decides agregar uno en el futuro) */
+footer {
+    background-color: #343a40; /* Un fondo oscuro para el pie de página */
+    color: hsl(0, 93%, 33%); /* Texto blanco para el pie de página */
+    padding: 1rem 0;
+    margin-top: 2rem;
+    text-align: center;
+}
