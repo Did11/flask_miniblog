@@ -25,7 +25,8 @@ login_manager.login_view = "login"
 csrf = CSRFProtect(app)
 
 # Configuración para Flask-Uploads
-app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(os.getcwd(), 'uploads')
+app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(os.getcwd(), 'uploads/profile_images')
+print(app.config['UPLOADED_PHOTOS_DEST'])
 photos = UploadSet('photos', IMAGES)
 configure_uploads(app, photos)
 

@@ -1,10 +1,10 @@
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, send_from_directory, request
 from flask_login import login_user, logout_user, login_required, current_user
 from app import app, db, photos
 from app.models import Usuario, Post, Comentario, comentarios_like
 from app.forms import UpdateProfileForm
 from .forms import RegistrationForm, LoginForm
-
+from flask_uploads import UploadSet, configure_uploads, IMAGES
 
 
 @app.route('/')
@@ -177,11 +177,6 @@ def like_comment(comment_id):
 def about():
     return render_template('about.html')
 
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
-
-
 
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
@@ -203,5 +198,13 @@ def profile():
             return redirect(url_for('profile'))
     
     # Si no hay datos POST, o si hay errores en el formulario, mostramos la página de perfil
-    image_url = url_for('static', filename='path_to_save_images/' + current_user.avatar)
+    if current_user.avatar_filename:
+        image_url = url_for('uploaded_file', filename='profile_images/' + current_user.avatar_filename)
+    else:
+        image_url = url_for('static', filename='images/default_images/default_avatar.png')
+    
     return render_template('profile.html', form=form, image_url=image_url)
+
+@app.route('/uploads/<path:filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOADED_PHOTOS_DEST'], filename)
