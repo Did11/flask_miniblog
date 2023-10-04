@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_wtf import CSRFProtect
-from flask_uploads import UploadSet, IMAGES, configure_uploads
+from werkzeug.utils import secure_filename  # Importamos esta utilidad para asegurar nombres de archivos
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -24,11 +24,13 @@ login_manager.login_view = "login"
 
 csrf = CSRFProtect(app)
 
-# Configuración para Flask-Uploads
-app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(os.getcwd(), 'uploads/profile_images')
-print(app.config['UPLOADED_PHOTOS_DEST'])
-photos = UploadSet('photos', IMAGES)
-configure_uploads(app, photos)
+# Configuración del directorio para guardar imágenes de perfil
+app.config['PROFILE_IMAGES_DEST'] = os.path.join(app.root_path, 'static/images/profile_images')
+print(app.config['PROFILE_IMAGES_DEST'])
+
+# Asegúrate de que el directorio para guardar imágenes de perfil exista
+if not os.path.exists(app.config['PROFILE_IMAGES_DEST']):
+    os.makedirs(app.config['PROFILE_IMAGES_DEST'])
 
 from . import routes, models
 
