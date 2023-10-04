@@ -3,8 +3,7 @@
 {% block content %}
 <div class="container mt-4">
     <h2>Perfil de {{ current_user.username }}</h2>
-    <img src="{{ url_for('static', filename='images/profile_images/' + current_user.avatar_filename) }}" alt="Avatar">
-
+    <img src="{{ image_url }}" alt="{{ current_user.username }}'s Avatar" class="rounded-circle" width="150">
     <p>Posts publicados: {{ post_count }}</p>
 
     <form method="POST" enctype="multipart/form-data">

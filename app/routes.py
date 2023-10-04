@@ -176,6 +176,9 @@ def like_comment(comment_id):
 def about():
     return render_template('about.html')
 
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
 
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
@@ -208,3 +211,8 @@ def profile():
 @app.route('/profile_images/<filename>')
 def uploaded_file(filename):
     return send_from_directory(os.path.join(app.config['UPLOADED_PHOTOS_DEST'], 'profile_images'), filename)
+
+@app.route('/user/<string:username>')
+def user_profile(username):
+    user = Usuario.query.filter_by(username=username).first_or_404()
+    return render_template('user_profile.html', user=user)

@@ -48,11 +48,30 @@ h1, h2, h3, h4, h5 {
     border: none;
 }
 
-/* Footer (Si decides agregar uno en el futuro) */
 footer {
     background-color: #343a40; /* Un fondo oscuro para el pie de página */
     color: hsl(0, 93%, 33%); /* Texto blanco para el pie de página */
     padding: 1rem 0;
     margin-top: 2rem;
     text-align: center;
+}
+
+.post-container {
+    display: flex;
+    align-items: start; /* Alinea los elementos al inicio verticalmente */
+    gap: 30px; /* Espacio entre la imagen y el contenido */
+}
+
+.profile-image-container {
+    flex-shrink: 0; /* Evita que la imagen se reduzca */
+}
+
+.profile-image {
+    width: 80px; /* Ancho de la imagen de perfil */
+    height: 80px; /* Altura de la imagen de perfil */
+    border-radius: 0%; /* Hace que la imagen sea redonda */
+}
+
+.post-content {
+    flex-grow: 1; /* Permite que el contenido crezca para ocupar el espacio restante */
 }
