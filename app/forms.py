@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import FileField, PasswordField, StringField, SubmitField, BooleanField
+from wtforms import FileField, PasswordField, StringField, SubmitField, BooleanField, TextAreaField
 from wtforms.validators import DataRequired, Email, EqualTo
 
 
@@ -20,3 +20,8 @@ class RegistrationForm(FlaskForm):
     confirm_password = PasswordField('Confirmar Contraseña', 
                                 validators=[DataRequired(), EqualTo('password', message='Las contraseñas deben coincidir')])
     submit = SubmitField('Registrarse')
+
+class CreatePostForm(FlaskForm):
+    title = StringField('Título', validators=[DataRequired()])
+    content = TextAreaField('Contenido', validators=[DataRequired()])
+    submit = SubmitField('Crear Post')
