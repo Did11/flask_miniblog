@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>Perfil de {{ user.username }}</h2>
+    
+    <!-- Mostrar Avatar -->
+    {% if user.avatar_filename %}
+        <img src="{{ url_for('static', filename='images/profile_images/' + user.avatar_filename) }}" alt="Avatar de {{ user.username }}" class="profile-image">
+    {% else %}
+        <img src="{{ url_for('static', filename='images/profile_images/default.jpg') }}" alt="Avatar predeterminado" class="profile-image">
+    {% endif %}
+
+    <!-- Mostrar Cantidad de Comentarios -->
+    <p>Comentarios realizados: {{ user.comments|length }}</p>
+    <p>Posts realizados: {{ user.posts|length }}</p>
+
+    <!-- Mostrar Fecha de Registro -->
+    <p>Fecha de registro: {{ user.date_registered.strftime('%d/%m/%Y') }}</p>
+{% endblock %}

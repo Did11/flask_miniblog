@@ -4,7 +4,7 @@ from werkzeug.utils import secure_filename
 from app import app, db
 from app.models import Usuario, Post, Comentario, comentarios_like
 from app.forms import UpdateProfileForm
-from .forms import RegistrationForm, LoginForm, CreatePostForm
+from .forms import RegistrationForm, LoginForm, CreatePostForm, CommentForm
 import os
 
 
@@ -146,16 +146,17 @@ def prueba():
 def post_detail(post_id):
     post = Post.query.get_or_404(post_id)
     comments = Comentario.query.filter_by(post_id=post_id).order_by(Comentario.date_created.desc()).all()
+    form = CommentForm()  # Crea una instancia del formulario
 
-    if request.method == 'POST' and current_user.is_authenticated:
-        texto = request.form['comment_text']
+    if form.validate_on_submit() and current_user.is_authenticated:
+        texto = form.comment_text.data
         if texto:
             comment = Comentario(texto=texto, user_id=current_user.id, post_id=post.id)
             db.session.add(comment)
             db.session.commit()
             flash('Comentario agregado exitosamente.')
 
-    return render_template('post_detail.html', post=post, comments=comments)
+    return render_template('post_detail.html', post=post, comments=comments, form=form)
 
 @app.route('/comment/<int:comment_id>/like', methods=['POST'])
 @login_required

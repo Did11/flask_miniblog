@@ -13,13 +13,16 @@ comentarios_like = db.Table('comentarios_like',
     db.Column('comment_id', db.Integer, db.ForeignKey('comentario.id'))
 )
 
+from datetime import datetime
+
 class Usuario(db.Model, UserMixin): 
     __tablename__ = 'usuario'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     avatar_filename = db.Column(db.String(120), nullable=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password_hash = db.Column(db.String(128), nullable=False)  # Renombrado
+    password_hash = db.Column(db.String(128), nullable=False)
+    date_registered = db.Column(db.DateTime, default=datetime.utcnow)  # Nuevo campo
     posts = db.relationship('Post', backref='author', lazy=True)
     comments = db.relationship('Comentario', backref='author', lazy=True)
 
