@@ -1,19 +1,25 @@
 /* ==============================
    GENERAL STYLES
    ============================== */
-   body {
+
+body {
     font-family: 'Arial', sans-serif;
-    background-color: #f8f9fa; /* Un ligero color de fondo para todo el cuerpo del sitio */
+    background-color: #f8f9fa;
 }
 
 .container {
-    max-width: 800px; /* Hace que el contenedor no sea demasiado ancho para lectura */
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 /* ==============================
    NAVBAR STYLES
    ============================== */
-.navbar-brand img {
+
+.nav-logo {
     height: 50px;
     width: auto;
 }
@@ -30,32 +36,32 @@ h1, h2, h3, h4, h5 {
    CARDS
    ============================== */
 .card {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1); /* Una sutil sombra para las tarjetas */
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
     transition: 0.3s;
 }
 
 .card:hover {
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2); /* Una sombra más pronunciada cuando se pasa el mouse por encima */
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 
 .card-title {
-    font-weight: bold; /* Hace que el título de la tarjeta sea negrita */
+    font-weight: bold;
 }
 
 .card-text {
-    color: #6c757d; /* Un color gris más ligero para el texto de la tarjeta */
+    color: #6c757d;
 }
 
 /* ==============================
    BUTTONS
    ============================== */
 .btn-primary {
-    background-color: #007bff; /* Puedes ajustar este color si quieres un tono diferente de azul para los botones */
+    background-color: #007bff;
     border: none;
 }
 
 .btn-primary:hover {
-    background-color: #0056b3; /* Un tono de azul más oscuro cuando se pasa el mouse por encima del botón */
+    background-color: #0056b3;
     border: none;
 }
 
@@ -63,8 +69,8 @@ h1, h2, h3, h4, h5 {
    FOOTER
    ============================== */
 footer {
-    background-color: #343a40; /* Un fondo oscuro para el pie de página */
-    color: hsl(0, 93%, 33%); /* Texto blanco para el pie de página */
+    background-color: #343a40;
+    color: hsl(0, 93%, 33%);
     padding: 1rem 0;
     margin-top: 2rem;
     text-align: center;
@@ -73,14 +79,14 @@ footer {
 /* ==============================
    POSTS
    ============================== */
-   .post-container {
+.post-container {
     display: flex;
-    align-items: start; /* Alinea los elementos al inicio verticalmente */
-    gap: 30px; /* Espacio entre la imagen y el contenido */
+    align-items: start;
+    gap: 30px;
 }
 
 .post-content {
-    flex-grow: 1; /* Permite que el contenido crezca para ocupar el espacio restante */
+    flex-grow: 1;
 }
 
 .titulo-comentario {
@@ -105,11 +111,11 @@ footer {
    PROFILES
    ============================== */
 .profile-image-container {
-    flex-shrink: 0; /* Evita que la imagen se reduzca */
+    flex-shrink: 0;
 }
 
 .profile-image {
-    width: 80px; /* Ancho de la imagen de perfil */
-    height: 80px; /* Altura de la imagen de perfil */
-    border-radius: 0%; /* Hace que la imagen sea redonda */
+    width: 80px;
+    height: 80px;
+    border-radius: 0%;
 }
