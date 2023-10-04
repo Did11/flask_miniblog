@@ -131,7 +131,13 @@ def delete_post(post_id):
 
 @app.route('/posts')
 def all_posts():
+    # Obtener todas las publicaciones ordenadas por fecha de creación
     posts = Post.query.order_by(Post.date_created.desc()).all()
+
+    # Obtener la cantidad de comentarios para cada publicación
+    for post in posts:
+        post.comments_count = Comentario.query.filter_by(post_id=post.id).count()
+
     return render_template('posts.html', posts=posts)
 
 @app.route('/test')
