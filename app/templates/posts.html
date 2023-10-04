@@ -1,24 +1,24 @@
 {% extends "base.html" %}
 {% block content %}
     {% for post in posts %}
-        <div class="post-container">
+        <div class="post-container flex items-start my-4 max-w-full">
             <!-- Imagen de perfil del autor -->
-            <div class="profile-image-container">
+            <div class="profile-image-container mr-4 flex-shrink-0">
                 {% if post.author.avatar_filename %}
-                    <img src="{{ url_for('static', filename='images/profile_images/' + post.author.avatar_filename) }}" alt="Avatar de {{ post.author.username }}" class="profile-image">
+                    <img src="{{ url_for('static', filename='images/profile_images/' + post.author.avatar_filename) }}" alt="Avatar de {{ post.author.username }}" class="profile-image w-20 h-20">
                 {% else %}
-                    <img src="{{ url_for('static', filename='images/default_images/default_avatar.png') }}" alt="Avatar predeterminado" class="profile-image">
+                    <img src="{{ url_for('static', filename='images/default_images/default_avatar.png') }}" alt="Avatar predeterminado" class="profile-image w-20 h-20">
                 {% endif %}
             </div>
 
             <!-- Contenido del post -->
-            <div class="post-content">
-                <h2><a href="{{ url_for('post_detail', post_id=post.id) }}" class="titulo-comentario">{{ post.title }}</a></h2>
-                <p>{{ post.content }}</p>
-                <p>Escrito por: <a href="{{ url_for('user_profile', username=post.author.username) }}" class="enlace-autor">{{ post.author.username }}</a></p>
+            <div class="post-content flex-grow">
+                <h2 class="mb-2"><a href="{{ url_for('post_detail', post_id=post.id) }}" class="titulo-comentario">{{ post.title }}</a></h2>
+                <p class="mb-2">{{ post.content }}</p>
+                <p class="mb-2">Escrito por: <a href="{{ url_for('user_profile', username=post.author.username) }}" class="enlace-autor">{{ post.author.username }}</a></p>
                 {% if current_user.is_authenticated and post.author.id == current_user.id %}
-                    <a href="{{ url_for('edit_post', post_id=post.id) }}">Editar</a>
-                    <form method="post" action="{{ url_for('delete_post', post_id=post.id) }}">
+                    <a href="{{ url_for('edit_post', post_id=post.id) }}" class="mr-2">Editar</a>
+                    <form method="post" action="{{ url_for('delete_post', post_id=post.id) }}" class="inline">
                         <input type="submit" value="Eliminar">
                     </form>
                 {% endif %}

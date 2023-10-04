@@ -1,0 +1,169 @@
+/* ==============================
+   GENERAL STYLES
+   ============================== */
+
+   body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+}
+
+.container {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+/* ==============================
+   NAVBAR STYLES
+   ============================== */
+
+.nav-logo {
+    height: 50px;
+    width: auto;
+}
+
+/* ==============================
+   HEADINGS
+   ============================== */
+h1, h2, h3, h4, h5 {
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+/* ==============================
+   CARDS
+   ============================== */
+.card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+    transition: 0.3s;
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+.card-title {
+    font-weight: bold;
+}
+
+.card-text {
+    color: #6c757d;
+}
+
+/* ==============================
+   BUTTONS
+   ============================== */
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border: none;
+}
+
+/* ==============================
+   FOOTER
+   ============================== */
+footer {
+    background-color: #343a40;
+    color: hsl(0, 93%, 33%);
+    padding: 1rem 0;
+    margin-top: 2rem;
+    text-align: center;
+}
+
+/* ==============================
+   POSTS
+   ============================== */
+.post-container {
+    display: flex;
+    align-items: start;
+    gap: 30px;
+}
+
+.post-content {
+    flex-grow: 1;
+}
+
+.titulo-comentario {
+    text-decoration: none;
+    color: #333;
+}
+
+.titulo-comentario:hover {
+    text-decoration: underline;
+}
+
+.enlace-autor {
+    color: green;
+    text-decoration: none;
+}
+
+.enlace-autor:hover {
+    text-decoration: underline;
+}
+
+/* ==============================
+   PROFILES
+   ============================== */
+.profile-image-container {
+    flex-shrink: 0;
+}
+
+.profile-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 0%;
+}
+
+
+/* ================================================
+   COSAS QUE YA NO SERVIAN EN EL STYLES.CSS TRAS TAILWIND PERO LAS DEJO DE REFERENCIA
+   ================================================ */
+
+/* ==============================
+   PROFILES
+   ============================== */
+/* Las siguientes definiciones se han vuelto redundantes debido a las clases de Tailwind y se han comentado.
+.profile-image-container {
+    flex-shrink: 0;
+}
+
+.profile-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 0%;
+}
+*/
+
+/* ==============================
+   FOOTER
+   ============================== */
+/* Las siguientes definiciones se han vuelto redundantes debido a las clases de Tailwind y se han comentado.
+footer {
+    background-color: #343a40;
+    color: hsl(0, 93%, 33%);
+    padding: 1rem 0;
+    margin-top: 2rem;
+    text-align: center;
+}
+*/
+
+/* ==============================
+   POSTS
+   ============================== */
+/* Las siguientes definiciones se han vuelto redundantes debido a las clases de Tailwind y se han comentado.
+.post-container {
+    display: flex;
+    align-items: start;
+    gap: 30px;
+}
+
+.post-content {
+    flex-grow: 1;
+}
+*/
