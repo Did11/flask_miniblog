@@ -454,15 +454,113 @@ video {
   --tw-numeric-fraction:  ;
   --tw-ring-inset:  ;
   --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgb(59 130 246 / 0.5);
-  --tw-ring-offset-shadow: 0 0 #0000;
-  --tw-ring-shadow: 0 0 #0000;
-  --tw-shadow: 0 0 #0000;
-  --tw-shadow-colored: 0 0 #0000;
-  --tw-blur:  ;
-  --tw-brightness:  ;
-  --tw-contrast:  ;
+  --tw-ring-offset-color: #fff;/* ==============================
+  GENERAL STYLES
+  ============================== */
+
+body {
+ margin: 0;
+ line-height: inherit;
+ font-family: 'Arial', sans-serif;
+ background-color: #f8f9fa;
+ @apply font-sans bg-gray-100;
+}
+
+.container {
+ max-width: 800px;
+ margin-left: auto;
+ margin-right: auto;
+ padding-left: 1rem;
+ padding-right: 1rem;
+ @apply max-w-2xl mx-auto px-4;
+}
+
+/* ==============================
+  NAVBAR STYLES
+  ============================== */
+
+.nav-logo {
+ height: 50px;
+ width: auto;
+ @apply h-12 w-auto;
+}
+
+/* ==============================
+  HEADINGS
+  ============================== */
+
+h1, h2, h3, h4, h5 {
+ margin-top: 1.5rem;
+ margin-bottom: 1rem;
+ @apply mt-6 mb-4;
+}
+
+/* ==============================
+  CARDS
+  ============================== */
+
+.card {
+ box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+ transition: 0.3s;
+ @apply shadow-md transition-shadow duration-300;
+}
+
+.card:hover {
+ box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+ @apply shadow-lg;
+}
+
+.card-title {
+ font-weight: bold;
+ @apply font-bold;
+}
+
+.card-text {
+ color: #6c757d;
+ @apply text-gray-600;
+}
+
+/* ==============================
+  BUTTONS
+  ============================== */
+
+.btn-primary {
+ background-color: #007bff;
+ border: none;
+ @apply bg-blue-600 border-none;
+}
+
+.btn-primary:hover {
+ background-color: #0056b3;
+ border: none;
+ @apply bg-blue-800 border-none;
+}
+
+/* ==============================
+  POSTS
+  ============================== */
+
+.titulo-comentario {
+ text-decoration: none;
+ color: #1f338d;
+ @apply no-underline text-blue-800;
+}
+
+.titulo-comentario:hover {
+ text-decoration: underline;
+ @apply underline;
+}
+
+.enlace-autor {
+ color: green;
+ text-decoration: none;
+ @apply text-green-500 no-underline;
+}
+
+.enlace-autor:hover {
+ text-decoration: underline;
+ @apply underline;
+}
   --tw-grayscale:  ;
   --tw-hue-rotate:  ;
   --tw-invert:  ;
@@ -532,11 +630,13 @@ video {
 
 /* ==============================
    GENERAL STYLES
-   ============================== */
-
+============================== */
 body {
+  margin: 0;
+  line-height: inherit;
   font-family: 'Arial', sans-serif;
   background-color: #f8f9fa;
+  @apply font-sans bg-gray-100;
 }
 
 .container {
@@ -545,79 +645,87 @@ body {
   margin-right: auto;
   padding-left: 1rem;
   padding-right: 1rem;
+  @apply max-w-2xl mx-auto px-4;
 }
 
 /* ==============================
    NAVBAR STYLES
-   ============================== */
-
+============================== */
 .nav-logo {
   height: 50px;
   width: auto;
+  @apply h-12 w-auto;
 }
 
 /* ==============================
    HEADINGS
-   ============================== */
-
+============================== */
 h1, h2, h3, h4, h5 {
   margin-top: 1.5rem;
   margin-bottom: 1rem;
+  @apply mt-6 mb-4;
 }
 
 /* ==============================
    CARDS
-   ============================== */
-
+============================== */
 .card {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
   transition: 0.3s;
+  @apply shadow-md transition-shadow duration-300;
 }
 
 .card:hover {
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  @apply shadow-lg;
 }
 
 .card-title {
   font-weight: bold;
+  @apply font-bold;
 }
 
 .card-text {
   color: #6c757d;
+  @apply text-gray-600;
 }
 
 /* ==============================
    BUTTONS
-   ============================== */
-
+============================== */
 .btn-primary {
   background-color: #007bff;
   border: none;
+  @apply bg-blue-600 border-none;
 }
 
 .btn-primary:hover {
   background-color: #0056b3;
   border: none;
+  @apply bg-blue-800 border-none;
 }
 
 /* ==============================
    POSTS
-   ============================== */
-
+============================== */
 .titulo-comentario {
   text-decoration: none;
   color: #1f338d;
+  @apply no-underline text-blue-800;
 }
 
 .titulo-comentario:hover {
   text-decoration: underline;
+  @apply underline;
 }
 
 .enlace-autor {
   color: green;
   text-decoration: none;
+  @apply text-green-500 no-underline;
 }
 
 .enlace-autor:hover {
   text-decoration: underline;
+  @apply underline;
 }

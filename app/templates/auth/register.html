@@ -1,32 +1,29 @@
 {% extends "base.html" %}
-
 {% block content %}
-<div class="container mt-5">
-    <h2>Registrarse en Miniblog</h2>
-    <form action="{{ url_for('register') }}" method="post">
-        {{ form.hidden_tag() }} <!-- Token CSRF -->
-
-        <div class="mb-3">
-            {{ form.username.label(class="form-label") }}
-            {{ form.username(class="form-control") }}
+<div class="mx-auto max-w-xl mt-5">
+    <h2>Register</h2>
+    <form method="post">
+        {{ form.hidden_tag() }}
+        <div class="mb-4">
+            {{ form.username.label(class="block text-sm font-medium text-gray-700") }}
+            {{ form.username(class="mt-1 p-2 w-full border rounded-md") }}
         </div>
-        
-        <div class="mb-3">
-            {{ form.email.label(class="form-label") }}
-            {{ form.email(class="form-control") }}
+        <div class="mb-4">
+            {{ form.email.label(class="block text-sm font-medium text-gray-700") }}
+            {{ form.email(class="mt-1 p-2 w-full border rounded-md") }}
         </div>
-
-        <div class="mb-3">
-            {{ form.password.label(class="form-label") }}
-            {{ form.password(class="form-control") }}
+        <div class="mb-4">
+            {{ form.password.label(class="block text-sm font-medium text-gray-700") }}
+            {{ form.password(class="mt-1 p-2 w-full border rounded-md") }}
         </div>
-
-        <div class="mb-3">
-            {{ form.confirm_password.label(class="form-label") }}
-            {{ form.confirm_password(class="form-control") }}
+        <div class="mb-4">
+            {{ form.password2.label(class="block text-sm font-medium text-gray-700") }}
+            {{ form.password2(class="mt-1 p-2 w-full border rounded-md") }}
         </div>
-        
-        {{ form.submit(class="btn btn-primary") }}
+        <div class="mb-4">
+            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Register</button>
+        </div>
     </form>
 </div>
 {% endblock %}
+
