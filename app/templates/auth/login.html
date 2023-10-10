@@ -1,26 +1,20 @@
 {% extends "base.html" %}
-
 {% block content %}
-<div class="container mt-5">
-    <h2>Iniciar sesión en Miniblog</h2>
-    <form action="{{ url_for('login') }}" method="post">
-        {{ form.hidden_tag() }} <!-- Token CSRF -->
-
-        <div class="mb-3">
-            {{ form.username.label(class="form-label") }}
-            {{ form.username(class="form-control") }}
+<div class="mx-auto max-w-xl mt-5">
+    <h2>Login</h2>
+    <form method="post">
+        {{ form.hidden_tag() }}
+        <div class="mb-4">
+            {{ form.username.label(class="block text-sm font-medium text-gray-700") }}
+            {{ form.username(class="mt-1 p-2 w-full border rounded-md") }}
         </div>
-
-        <div class="mb-3">
-            {{ form.password.label(class="form-label") }}
-            {{ form.password(class="form-control") }}
+        <div class="mb-4">
+            {{ form.password.label(class="block text-sm font-medium text-gray-700") }}
+            {{ form.password(class="mt-1 p-2 w-full border rounded-md") }}
         </div>
-        
-        <div class="mb-3">
-            {{ form.remember_me() }} {{ form.remember_me.label }}
+        <div class="mb-4">
+            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Login</button>
         </div>
-        
-        {{ form.submit(class="btn btn-primary") }}
     </form>
 </div>
 {% endblock %}
