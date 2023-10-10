@@ -4,11 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MiniBlog</title>
+    <title>R4 MiniBlog</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tailwind.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 
 <body class="font-sans bg-gray-100">
@@ -16,7 +15,7 @@
 {% include 'includes/_navbar.html' %}
 
 <!-- Flash Messages -->
-<div class="mx-auto px-4 max-w-xl mt-4">
+<div class="w-3/5 mx-auto px-4 mt-4">
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             {% for message in messages %}
@@ -29,7 +28,7 @@
 </div>
 
 <!-- Main Content -->
-<div class="mx-auto px-4 max-w-xl">
+<div class="w-3/5 mx-auto px-4 mt-4">
     {% block content %}{% endblock %}
 </div>
 
