@@ -1,12 +1,13 @@
-from flask import render_template, redirect, url_for, flash, send_from_directory, request
-from flask_login import login_user, logout_user, login_required, current_user
-from werkzeug.utils import secure_filename
+from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import app, db
-from app.models import Usuario, Post, Comentario, comentarios_like
-from app.forms import UpdateProfileForm
-from .forms import RegistrationForm, LoginForm, CreatePostForm, CommentForm
-import os
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm
+from flask_login import current_user, login_user, logout_user, login_required
+from app.models import User, Post
+from werkzeug.urls import url_parse
+from datetime import datetime
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity, set_access_cookies, unset_jwt_cookies 
 
+jwt = JWTManager(app)
 
 @app.route('/')
 def index():
@@ -41,32 +42,39 @@ def register():
     return render_template('auth/register.html', form=form)
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['POST'])
 def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-    
-    form = LoginForm()  # Instancia el formulario
+    if not request.is_json:
+        return jsonify({"msg": "Missing JSON in request"}), 400
 
-    if form.validate_on_submit():  # Si el formulario es válido al hacer POST
-        user = Usuario.query.filter_by(username=form.username.data).first()  # Usa el formulario para obtener datos
-        if user and user.check_password(form.password.data):
-            login_user(user)
-            flash('Inicio de sesión exitoso.')
-            return redirect(url_for('index'))
-        else:
-            flash('Nombre de usuario o contraseña incorrectos.')
+    username = request.json.get('username', None)
+    password = request.json.get('password', None)
 
-    return render_template('auth/login.html', form=form)
+    if not username or not password:
+        return jsonify({"msg": "Missing username or password"}), 400
 
+    user = User.query.filter_by(username=username).first()
 
+    if user and user.check_password(password):
+        access_token = create_access_token(identity=username)
+        response = jsonify({"login": True})
+        set_access_cookies(response, access_token)  # Establece la cookie con el token JWT
+        return response
+
+    return jsonify({"msg": "Bad username or password"}), 401
 
 @app.route('/logout')
-@login_required
+@jwt_required()
 def logout():
-    logout_user()
-    flash('Has cerrado sesión exitosamente.')
-    return redirect(url_for('index'))
+    response = make_response(redirect(url_for('index')))
+    unset_jwt_cookies(response)  # Usa esto para eliminar las cookies JWT
+    return response
+
+@app.route('/protected', methods=['GET'])
+@jwt_required()
+def protected():
+    current_user = get_jwt_identity()
+    return jsonify(logged_in_as=current_user), 200
 
 @app.route('/base')
 def show_base():
