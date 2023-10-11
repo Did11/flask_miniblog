@@ -6,6 +6,7 @@ from flask_migrate import Migrate
 from flask_wtf import CSRFProtect
 from werkzeug.utils import secure_filename  # Importamos esta utilidad para asegurar nombres de archivos
 from dotenv import load_dotenv
+from flask_jwt_extended import JWTManager  # Importa JWTManager
 
 load_dotenv()
 
@@ -31,6 +32,9 @@ print(app.config['PROFILE_IMAGES_DEST'])
 # Asegúrate de que el directorio para guardar imágenes de perfil exista
 if not os.path.exists(app.config['PROFILE_IMAGES_DEST']):
     os.makedirs(app.config['PROFILE_IMAGES_DEST'])
+
+# Inicializa Flask-JWT-Extended
+jwt = JWTManager(app)
 
 from . import routes, models
 
