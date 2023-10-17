@@ -36,6 +36,10 @@ if not os.path.exists(app.config['PROFILE_IMAGES_DEST']):
 # Inicializa Flask-JWT-Extended
 jwt = JWTManager(app)
 
+# Ahora importa y registra el Blueprint
+from .routes import users
+app.register_blueprint(users)
+
 from . import routes, models
 
 if __name__ == "__main__":
