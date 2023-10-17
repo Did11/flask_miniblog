@@ -1,7 +1,8 @@
-from flask import render_template, flash, redirect, url_for, request, jsonify, Blueprint
-from app import app, db
+from flask import render_template, flash, redirect, url_for, request, jsonify, Blueprint, make_response
+from app import app, db, bcrypt
 from app.forms import LoginForm, RegistrationForm, UpdateProfileForm, CreatePostForm
 from flask_login import current_user, login_user, logout_user, login_required
+from flask_bcrypt import Bcrypt
 from app.models import Usuario, Post, Comentario
 from werkzeug.urls import url_parse
 from datetime import datetime
@@ -43,18 +44,25 @@ def register():
     return render_template('auth/register.html', form=form)
 
 
-@users.route('/login', methods=['POST'])
+@users.route('/login', methods=['GET', 'POST'])
 def login():
     auth = request.authorization
     if not auth or not auth.username or not auth.password:
         return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
-    user = User.query.filter_by(username=auth.username).first()
+    
+    user = Usuario.query.filter_by(username=auth.username).first()
+    
     if not user:
         return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
-    if bcrypt.check_password_hash(user.password, auth.password):
-        access_token = create_access_token(identity=user.public_id)
+    
+    # Asegúrate de que bcrypt esté importado y de que estés usando user.password_hash
+    if bcrypt.check_password_hash(user.password_hash, auth.password):
+        # Usamos user.id en lugar de user.public_id
+        access_token = create_access_token(identity=user.id)
         return jsonify({'token': access_token})
+    
     return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
+
 
 
 @app.route('/logout')

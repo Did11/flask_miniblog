@@ -4,13 +4,15 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_wtf import CSRFProtect
-from werkzeug.utils import secure_filename  # Importamos esta utilidad para asegurar nombres de archivos
+from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
-from flask_jwt_extended import JWTManager  # Importa JWTManager
+from flask_jwt_extended import JWTManager
+from flask_bcrypt import Bcrypt  # <-- Importa Bcrypt aquí
 
 load_dotenv()
 
 app = Flask(__name__)
+bcrypt = Bcrypt(app)  # <-- Inicializa Bcrypt aquí
 app.debug = True
 
 # Importa configuraciones de config.py
