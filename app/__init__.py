@@ -1,18 +1,16 @@
 import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_wtf import CSRFProtect
-from werkzeug.utils import secure_filename
+from werkzeug.utils import secure_filename  # Importamos esta utilidad para asegurar nombres de archivos
 from dotenv import load_dotenv
-from flask_jwt_extended import JWTManager
-from flask_bcrypt import Bcrypt  # <-- Importa Bcrypt aquí
+from flask_jwt_extended import JWTManager  # Importa JWTManager
+from flask_bcrypt import Bcrypt
 
 load_dotenv()
 
 app = Flask(__name__)
-bcrypt = Bcrypt(app)  # <-- Inicializa Bcrypt aquí
 app.debug = True
 
 # Importa configuraciones de config.py
@@ -21,11 +19,10 @@ app.config.from_object('config')
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = "login"
-
 csrf = CSRFProtect(app)
+
+# Inicialización de Bcrypt
+bcrypt = Bcrypt(app)
 
 # Configuración del directorio para guardar imágenes de perfil
 app.config['PROFILE_IMAGES_DEST'] = os.path.join(app.root_path, 'static/images/profile_images')
