@@ -1,7 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify, Blueprint, make_response
 from app import app, db, bcrypt
 from app.forms import LoginForm, RegistrationForm, UpdateProfileForm, CreatePostForm, CommentForm
-from flask_login import current_user, login_user, logout_user, login_required
 from flask_bcrypt import Bcrypt
 from app.models import Usuario, Post, Comentario
 from werkzeug.urls import url_parse
@@ -86,7 +85,7 @@ def show_base():
     return render_template('base.html')
 
 @app.route('/create_post', methods=['GET', 'POST'])
-@login_required
+@jwt_required()
 def create_post():
     form = CreatePostForm()  # Crea una instancia del formulario
     
@@ -104,7 +103,7 @@ def create_post():
     return render_template('create_post.html', form=form)  # Pasa el formulario al template
 
 @app.route('/edit_post/<int:post_id>', methods=['GET', 'POST'])
-@login_required
+@jwt_required()
 def edit_post(post_id):
     post = Post.query.get_or_404(post_id)
     
@@ -128,7 +127,7 @@ def edit_post(post_id):
 
 
 @app.route('/delete_post/<int:post_id>', methods=['POST'])
-@login_required
+@jwt_required()
 def delete_post(post_id):
     post = Post.query.get_or_404(post_id)
     
@@ -178,7 +177,7 @@ def post_detail(post_id):
     return render_template('post_detail.html', post=post, comments=comments, form=form)
 
 @app.route('/comment/<int:comment_id>/like', methods=['POST'])
-@login_required
+@jwt_required()
 def like_comment(comment_id):
     comment = Comentario.query.get_or_404(comment_id)
     if current_user in comment.liked_by:
@@ -201,7 +200,7 @@ def contact():
     return render_template('contact.html')
 
 @app.route('/profile', methods=['GET', 'POST'])
-@login_required
+@jwt_required()
 def profile():
     form = UpdateProfileForm()
     
