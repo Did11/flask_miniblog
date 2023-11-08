@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify, Blueprint, make_response
 from app import app, db, bcrypt
-from app.forms import LoginForm, RegistrationForm, UpdateProfileForm, CreatePostForm
+from app.forms import LoginForm, RegistrationForm, UpdateProfileForm, CreatePostForm, CommentForm
 from flask_login import current_user, login_user, logout_user, login_required
 from flask_bcrypt import Bcrypt
 from app.models import Usuario, Post, Comentario
