@@ -39,29 +39,32 @@ def register():
         db.session.commit()
 
         flash('Registro exitoso. Ahora puedes iniciar sesión.')
-        return redirect(url_for('login'))
+        return redirect(url_for('users.login'))
 
     return render_template('auth/register.html', form=form)
 
 
 @users.route('/login', methods=['GET', 'POST'])
 def login():
-    auth = request.authorization
-    if not auth or not auth.username or not auth.password:
-        return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+
+    form = LoginForm()
     
-    user = Usuario.query.filter_by(username=auth.username).first()
+    if form.validate_on_submit():
+        user = Usuario.query.filter_by(username=form.username.data).first()
+        
+        if user and bcrypt.check_password_hash(user.password_hash, form.password.data):
+            access_token = create_access_token(identity=user.id)
+            response = jsonify({'login': True, 'token': access_token})
+            set_access_cookies(response, access_token)
+            return response, 200
+        
+        flash('Usuario o contraseña incorrectos.')
+        return redirect(url_for('users.login'))
     
-    if not user:
-        return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
-    
-    # Asegúrate de que bcrypt esté importado y de que estés usando user.password_hash
-    if bcrypt.check_password_hash(user.password_hash, auth.password):
-        # Usamos user.id en lugar de user.public_id
-        access_token = create_access_token(identity=user.id)
-        return jsonify({'token': access_token})
-    
-    return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
+    return render_template('auth/login.html', form=form)
+
 
 
 
