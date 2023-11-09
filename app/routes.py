@@ -1,14 +1,43 @@
-from flask import render_template, flash, redirect, url_for, request, jsonify, Blueprint, make_response
+from flask import render_template, flash, redirect, url_for, request, jsonify, Blueprint, make_response, g
 from app import app, db, bcrypt
 from app.forms import LoginForm, RegistrationForm, UpdateProfileForm, CreatePostForm, CommentForm
 from flask_bcrypt import Bcrypt
 from app.models import Usuario, Post, Comentario
 from werkzeug.urls import url_parse
 from datetime import datetime
-from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity, set_access_cookies, unset_jwt_cookies 
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity, set_access_cookies, unset_jwt_cookies
+from flask_jwt_extended.exceptions import NoAuthorizationError
+from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 
 jwt = JWTManager(app)
 users = Blueprint('users', __name__)
+
+@app.before_request
+def before_request():
+    # Suponiendo que tienes una función `current_user` que devuelve el usuario actual
+    g.current_user = get_current_user()
+
+
+@app.context_processor
+def inject_user():
+    try:
+        return {'current_user': g.current_user}
+    except AttributeError:
+        # En caso de que g.current_user no esté definido, puedes decidir qué hacer
+        # Por ejemplo, puedes devolver un usuario anónimo o None
+        return {'current_user': None}
+
+
+def get_current_user():
+    try:
+        current_user_id = get_jwt_identity()
+        if current_user_id:
+            return Usuario.query.get(current_user_id)
+    except (RuntimeError, NoAuthorizationError, ExpiredSignatureError, InvalidTokenError):
+        # Si no hay un JWT válido, o si hay algún otro error relacionado con JWT,
+        # simplemente devolvemos None.
+        return None
+    return None
 
 @app.route('/')
 def index():
@@ -16,9 +45,6 @@ def index():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-
     form = RegistrationForm()
     
     if form.validate_on_submit():
@@ -37,17 +63,15 @@ def register():
         db.session.add(new_user)
         db.session.commit()
 
-        flash('Registro exitoso. Ahora puedes iniciar sesión.')
-        return redirect(url_for('users.login'))
+        access_token = create_access_token(identity=new_user.id)
+        response = jsonify({'register': True, 'token': access_token})
+        return response, 200
 
     return render_template('auth/register.html', form=form)
 
 
 @users.route('/login', methods=['GET', 'POST'])
 def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-
     form = LoginForm()
     
     if form.validate_on_submit():
@@ -63,8 +87,6 @@ def login():
         return redirect(url_for('users.login'))
     
     return render_template('auth/login.html', form=form)
-
-
 
 
 @app.route('/logout')
@@ -87,43 +109,37 @@ def show_base():
 @app.route('/create_post', methods=['GET', 'POST'])
 @jwt_required()
 def create_post():
-    form = CreatePostForm()  # Crea una instancia del formulario
-    
+    form = CreatePostForm()
+    current_user_id = get_jwt_identity()
     if form.validate_on_submit():
         title = form.title.data
         content = form.content.data
-        
-        post = Post(title=title, content=content, user_id=current_user.id)
+        post = Post(title=title, content=content, user_id=current_user_id)
         db.session.add(post)
         db.session.commit()
-        
         flash('Post creado exitosamente.')
         return redirect(url_for('index'))
-    
-    return render_template('create_post.html', form=form)  # Pasa el formulario al template
+    return render_template('create_post.html', form=form)
+
 
 @app.route('/edit_post/<int:post_id>', methods=['GET', 'POST'])
 @jwt_required()
 def edit_post(post_id):
     post = Post.query.get_or_404(post_id)
-    
-    if post.author.id != current_user.id:
+    current_user_id = get_jwt_identity()
+    if post.author.id != current_user_id:
         flash('No tienes permiso para editar este post.')
         return redirect(url_for('index'))
-    
-    if request.method == 'POST':
-        post.title = request.form['title']
-        post.content = request.form['content']
-        
-        if not post.title or not post.content:
-            flash('Título y contenido son obligatorios.')
-            return redirect(url_for('edit_post', post_id=post_id))
-        
+    form = UpdatePostForm(request.form)
+    if form.validate_on_submit():
+        post.title = form.title.data
+        post.content = form.content.data
         db.session.commit()
         flash('Post editado exitosamente.')
         return redirect(url_for('index'))
-    
-    return render_template('edit_post.html', post=post)
+    form.title.data = post.title
+    form.content.data = post.content
+    return render_template('edit_post.html', form=form, post=post)
 
 
 @app.route('/delete_post/<int:post_id>', methods=['POST'])
@@ -179,15 +195,17 @@ def post_detail(post_id):
 @app.route('/comment/<int:comment_id>/like', methods=['POST'])
 @jwt_required()
 def like_comment(comment_id):
+    current_user_id = get_jwt_identity()
     comment = Comentario.query.get_or_404(comment_id)
-    if current_user in comment.liked_by:
-        comment.liked_by.remove(current_user)
-        db.session.commit()
-        flash('Ya no te gusta este comentario.')
+    user = Usuario.query.get(current_user_id)
+    
+    if user in comment.liked_by:
+        comment.liked_by.remove(user)
     else:
-        comment.liked_by.append(current_user)
-        db.session.commit()
-        flash('Te gusta este comentario.')
+        comment.liked_by.append(user)
+    
+    db.session.commit()
+    flash('Tu reacción ha sido actualizada.')
     
     return redirect(request.referrer or url_for('index'))
 
@@ -202,29 +220,23 @@ def contact():
 @app.route('/profile', methods=['GET', 'POST'])
 @jwt_required()
 def profile():
+    current_user_id = get_jwt_identity()
+    user = Usuario.query.get(current_user_id)
     form = UpdateProfileForm()
     
     if form.validate_on_submit():
         if form.avatar.data:
-            # Guardar la imagen en el directorio static
             filename = secure_filename(form.avatar.data.filename)
             filepath = os.path.join(app.root_path, 'static/images/profile_images', filename)
             form.avatar.data.save(filepath)
             
-            # Asignar el nombre de archivo al avatar del usuario
-            current_user.avatar_filename = filename
-            
-            # Guardar los cambios en la base de datos
+            user.avatar_filename = filename
             db.session.commit()
-            
             flash('Tu perfil ha sido actualizado!', 'success')
             return redirect(url_for('profile'))
     
-    # Generar URL para la imagen
-    if current_user.avatar_filename:
-        image_url = url_for('static', filename=f'images/profile_images/{current_user.avatar_filename}')
-    else:
-        image_url = url_for('static', filename='images/default_images/default_avatar.png')
+    image_url = url_for('static', filename=f'images/profile_images/{user.avatar_filename}') if user.avatar_filename else url_for('static', filename='images/default_images/default_avatar.png')
+    
     return render_template('profile.html', form=form, image_url=image_url)
 
 @app.route('/profile_images/<filename>')

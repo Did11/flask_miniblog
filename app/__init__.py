@@ -20,8 +20,6 @@ bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 
 from app import models, routes
-
-# Asegúrate de que la carpeta de imágenes de perfil exista
 app.config['PROFILE_IMAGES_DEST'] = os.path.join(app.root_path, 'static/images/profile_images')
 if not os.path.exists(app.config['PROFILE_IMAGES_DEST']):
     os.makedirs(app.config['PROFILE_IMAGES_DEST'])
