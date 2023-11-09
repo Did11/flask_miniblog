@@ -1,16 +1,16 @@
 {% extends "base.html" %}
+
 {% block content %}
 <div class="mx-auto max-w-xl mt-5">
     <h2>Login</h2>
-    <form method="post">
-        {{ form.hidden_tag() }}
+    <form id="login-form">
         <div class="mb-4">
-            {{ form.username.label(class="block text-sm font-medium text-gray-700") }}
-            {{ form.username(class="mt-1 p-2 w-full border rounded-md") }}
+            <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+            <input type="text" id="username" name="username" required class="mt-1 p-2 w-full border rounded-md">
         </div>
         <div class="mb-4">
-            {{ form.password.label(class="block text-sm font-medium text-gray-700") }}
-            {{ form.password(class="mt-1 p-2 w-full border rounded-md") }}
+            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+            <input type="password" id="password" name="password" required class="mt-1 p-2 w-full border rounded-md">
         </div>
         <div class="mb-4">
             <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Login</button>

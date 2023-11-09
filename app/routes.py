@@ -2,6 +2,7 @@ from flask import render_template, flash, redirect, url_for, request, jsonify, B
 from app import app, db, bcrypt
 from app.forms import LoginForm, RegistrationForm, UpdateProfileForm, CreatePostForm, CommentForm
 from flask_bcrypt import Bcrypt
+from werkzeug.security import check_password_hash
 from app.models import Usuario, Post, Comentario
 from werkzeug.urls import url_parse
 from datetime import datetime
@@ -69,25 +70,42 @@ def register():
     return render_template('auth/register.html', form=form)
 
 
+from flask import Response
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
-    
-    if form.validate_on_submit():
-        user = Usuario.query.filter_by(username=form.username.data).first()
-        
-        if user and bcrypt.check_password_hash(user.bcrypt_password_hash, form.password.data):
+    if request.method == 'POST':
+        # Verificar si la solicitud es JSON
+        if request.is_json:
+            data = request.get_json()
+            username = data.get('username')
+            password = data.get('password')
+        else:
+            # Si no es JSON, asumir que es una solicitud de formulario
+            username = request.form.get('username')
+            password = request.form.get('password')
+
+        user = Usuario.query.filter_by(username=username).first()
+
+        if user and bcrypt.check_password_hash(user.bcrypt_password_hash, password):
             access_token = create_access_token(identity=user.id)
-            response = make_response(redirect(url_for('index')))  # Redirige a la página de inicio o a cualquier otra
-            set_access_cookies(response, access_token)  # Establece las cookies JWT
-            return response
-        
-        flash('Usuario o contraseña incorrectos.')
-        return redirect(url_for('users.login'))
-    
-    return render_template('auth/login.html', form=form)
-
-
+            if request.is_json:
+                # Respuesta para solicitudes de API
+                return jsonify(access_token=access_token), 200
+            else:
+                # Respuesta para solicitudes de formulario web
+                # Aquí manejarías la sesión del usuario y redirigirías
+                return redirect(url_for('index'))
+        else:
+            if request.is_json:
+                # Respuesta de error para solicitudes de API
+                return jsonify({"msg": "Bad username or password"}), 401
+            else:
+                # Respuesta de error para solicitudes de formulario web
+                return render_template('login.html', error="Bad username or password")
+    else:
+        # Método GET para mostrar el formulario de inicio de sesión
+        return render_template('login.html')
 
 @app.route('/logout')
 @jwt_required()
