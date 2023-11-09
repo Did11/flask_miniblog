@@ -10,6 +10,10 @@ import config
 
 load_dotenv()
 
+print("SECRET_KEY:", os.environ.get('SECRET_KEY'))
+print("JWT_SECRET_KEY:", os.environ.get('JWT_SECRET_KEY'))
+
+
 app = Flask(__name__)
 app.config.from_object(config)
 

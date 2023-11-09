@@ -23,6 +23,7 @@ class Usuario(db.Model):
     date_registered = db.Column(db.DateTime, default=datetime.utcnow)  # Nuevo campo
     posts = db.relationship('Post', backref='author', lazy=True)
     comments = db.relationship('Comentario', backref='author', lazy=True)
+    bcrypt_password_hash = db.Column(db.String(128))
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)

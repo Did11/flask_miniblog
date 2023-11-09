@@ -14,7 +14,6 @@ users = Blueprint('users', __name__)
 
 @app.before_request
 def before_request():
-    # Suponiendo que tienes una función `current_user` que devuelve el usuario actual
     g.current_user = get_current_user()
 
 
@@ -34,8 +33,7 @@ def get_current_user():
         if current_user_id:
             return Usuario.query.get(current_user_id)
     except (RuntimeError, NoAuthorizationError, ExpiredSignatureError, InvalidTokenError):
-        # Si no hay un JWT válido, o si hay algún otro error relacionado con JWT,
-        # simplemente devolvemos None.
+        # Si no hay un JWT válido, o si hay algún otro error relacionado con JWT, simplemente devolvemos None.
         return None
     return None
 
@@ -64,8 +62,9 @@ def register():
         db.session.commit()
 
         access_token = create_access_token(identity=new_user.id)
-        response = jsonify({'register': True, 'token': access_token})
-        return response, 200
+        response = make_response(redirect(url_for('index')))  # Redirige a la página deseada
+        set_access_cookies(response, access_token)  # Establece las cookies JWT
+        return response
 
     return render_template('auth/register.html', form=form)
 

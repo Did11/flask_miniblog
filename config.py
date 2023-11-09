@@ -12,6 +12,6 @@ STATIC_FOLDER = 'static'
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # Configuraciones para Flask-JWT-Extended
-JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY', SECRET_KEY)  # Usando la misma clave secreta para JWT. Puedes cambiar esto si lo prefieres.
-JWT_ACCESS_TOKEN_EXPIRES = 3600  # Duración del token de acceso en segundos. Aquí está configurado para 1 hora.
+JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY', SECRET_KEY)  # Usando la misma clave secreta para JWT. Se puede cambiar.
+JWT_ACCESS_TOKEN_EXPIRES = 3600  # Duración del token de acceso en segundos. Está configurado para 1 hora.
 JWT_ALGORITHM = 'HS256'
