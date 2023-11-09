@@ -1,49 +1,50 @@
 <nav class="bg-slate-400 p-4 shadow-md">
-  <div class="container">
-      <div class="flex justify-between items-center">
-          <a class="nav-logo" href="/"><img class="h-12" src="{{ url_for('static', filename='images/logo/batskull.jpg') }}"></a>
-
-          <div class="hidden lg:flex space-x-4">
-              <a class="text-gray-700 hover:text-gray-900" href="/">Inicio</a>
-              <a class="text-gray-700 hover:text-gray-900" href="{{ url_for('all_posts') }}">Posts</a>
-              {% if current_user.is_authenticated %}
-              <a class="text-gray-700 hover:text-gray-900" href="{{ url_for('create_post') }}">Crear Post</a>
-              {% endif %}
-              <a class="text-gray-700 hover:text-gray-900" href="/about">Acerca del blog</a>
-              <a class="text-gray-700 hover:text-gray-900" href="/contact">Contacto</a>
-          </div>
-          <div class="hidden lg:flex space-x-4 ml-auto">
-              {% if current_user.is_authenticated %}
-              <a class="text-gray-700 hover:text-gray-900" href="/profile">Perfil</a>
-              <a class="text-gray-700 hover:text-gray-900" href="{{ url_for('logout') }}">Cerrar Sesión</a>
-              {% else %}
-              <a class="text-gray-700 hover:text-gray-900" href="/login">Iniciar sesión</a>
-              <a class="text-gray-700 hover:text-gray-900" href="/register">Registrarse</a>
-              {% endif %}
-          </div>
-          <!-- Mobile menu button -->
-          <button class="lg:hidden flex items-center p-3">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
-              </svg>
-          </button>
-      </div>
-      <!-- Mobile Menu -->
-      <div class="lg:hidden mt-4 space-y-4">
-          <a class="block text-gray-700 hover:text-gray-900" href="/">Inicio</a>
-          <a class="block text-gray-700 hover:text-gray-900" href="{{ url_for('all_posts') }}">Posts</a>
-          {% if current_user.is_authenticated %}
-          <a class="block text-gray-700 hover:text-gray-900" href="{{ url_for('create_post') }}">Crear Post</a>
-          {% endif %}
-          <a class="block text-gray-700 hover:text-gray-900" href="/about">Acerca del blog</a>
-          <a class="block text-gray-700 hover:text-gray-900" href="/contact">Contacto</a>
-          {% if current_user.is_authenticated %}
-          <a class="block text-gray-700 hover:text-gray-900" href="/profile">Perfil</a>
-          <a class="block text-gray-700 hover:text-gray-900" href="{{ url_for('logout') }}">Cerrar Sesión</a>
-          {% else %}
-          <a class="block text-gray-700 hover:text-gray-900" href="/login">Iniciar sesión</a>
-          <a class="block text-gray-700 hover:text-gray-900" href="/register">Registrarse</a>
-          {% endif %}
-      </div>
-  </div>
-</nav>
+    <div class="container mx-auto">
+        <div class="flex justify-between items-center">
+            <a class="nav-logo" href="/"><img class="h-12" src="{{ url_for('static', filename='images/logo/batskull.jpg') }}" alt="Logo"></a>
+  
+            <!-- Menú principal para navegación de escritorio -->
+            <div class="hidden lg:flex space-x-4">
+                <a class="text-gray-700 hover:text-gray-900" href="/">Inicio</a>
+                <a class="text-gray-700 hover:text-gray-900" href="{{ url_for('all_posts') }}">Posts</a>
+                <!-- Los enlaces de Crear Post se manejarán con JS -->
+                <a class="text-gray-700 hover:text-gray-900" href="/about">Acerca del blog</a>
+                <a class="text-gray-700 hover:text-gray-900" href="/contact">Contacto</a>
+            </div>
+  
+            <!-- Menú para usuarios autenticados -->
+            <div class="hidden lg:flex space-x-4 ml-auto" id="user-menu" style="display: none;">
+                <a class="text-gray-700 hover:text-gray-900" href="{{ url_for('create_post') }}">Crear Post</a>
+                <a class="text-gray-700 hover:text-gray-900" href="/profile">Perfil</a>
+                <a class="text-gray-700 hover:text-gray-900" id="logout-button" href="javascript:void(0);">Cerrar Sesión</a>
+            </div>
+  
+            <!-- Menú para invitados -->
+            <div class="hidden lg:flex space-x-4 ml-auto" id="guest-menu">
+                <a class="text-gray-700 hover:text-gray-900" href="/login">Iniciar sesión</a>
+                <a class="text-gray-700 hover:text-gray-900" href="/register">Registrarse</a>
+            </div>
+  
+            <!-- Botón del menú móvil -->
+            <button class="lg:hidden flex items-center p-3">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+        </div>
+  
+        <!-- Menú móvil para usuarios autenticados -->
+        <div class="lg:hidden mt-4 space-y-4" id="mobile-user-menu" style="display: none;">
+            <a class="block text-gray-700 hover:text-gray-900" href="{{ url_for('create_post') }}">Crear Post</a>
+            <a class="block text-gray-700 hover:text-gray-900" href="/profile">Perfil</a>
+            <a class="block text-gray-700 hover:text-gray-900" id="mobile-logout-button" href="javascript:void(0);">Cerrar Sesión</a>
+        </div>
+  
+        <!-- Menú móvil para invitados -->
+        <div class="lg:hidden mt-4 space-y-4" id="mobile-guest-menu">
+            <a class="block text-gray-700 hover:text-gray-900" href="/login">Iniciar sesión</a>
+            <a class="block text-gray-700 hover:text-gray-900" href="/register">Registrarse</a>
+        </div>
+    </div>
+  </nav>
+  

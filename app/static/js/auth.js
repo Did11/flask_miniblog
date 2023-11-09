@@ -86,3 +86,41 @@ if (logoutButton) {
         logout();
     });
 }
+
+// Función para enviar una solicitud para crear un post
+function createPost(title, content) {
+    fetchWithAuth('/create_post', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ title, content })
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error('Error al crear el post!');
+        }
+    })
+    .then(data => {
+        // Manejar la respuesta después de crear el post
+        console.log('Post creado:', data);
+        // Redirigir al usuario a la página de posts o mostrar un mensaje de éxito
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al crear el post: ' + error.message);
+    });
+}
+
+// Vincular la función de crear post al formulario correspondiente
+const createPostForm = document.getElementById('create-post-form');
+if (createPostForm) {
+    createPostForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const title = document.getElementById('post-title').value;
+        const content = document.getElementById('post-content').value;
+        createPost(title, content);
+    });
+}

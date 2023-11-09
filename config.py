@@ -15,3 +15,6 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY', SECRET_KEY)  # Usando la misma clave secreta para JWT. Se puede cambiar.
 JWT_ACCESS_TOKEN_EXPIRES = 3600  # Duración del token de acceso en segundos. Está configurado para 1 hora.
 JWT_ALGORITHM = 'HS256'
+
+# Modo de depuración
+DEBUG = True  # Asegúrate de cambiar esto a False en producción

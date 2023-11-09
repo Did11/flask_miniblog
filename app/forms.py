@@ -4,7 +4,7 @@ from wtforms.validators import DataRequired, Email, EqualTo
 
 
 class LoginForm(FlaskForm):
-    username = StringField('Nombre de Usuario', validators=[DataRequired()])
+    username = StringField('Nombre del Usuario', validators=[DataRequired()])
     password = PasswordField('Contraseña', validators=[DataRequired()])
     remember_me = BooleanField('Recordarme')
     submit = SubmitField('Iniciar Sesión')
@@ -14,7 +14,7 @@ class UpdateProfileForm(FlaskForm):
     submit = SubmitField('Actualizar')
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Nombre de usuario', validators=[DataRequired()])
+    username = StringField('Nombre deL usuario', validators=[DataRequired()])
     email = StringField('Correo Electrónico', validators=[DataRequired(), Email()])
     password = PasswordField('Contraseña', validators=[DataRequired()])
     confirm_password = PasswordField('Confirmar Contraseña', 

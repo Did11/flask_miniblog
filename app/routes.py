@@ -1,17 +1,24 @@
-from flask import render_template, flash, redirect, url_for, request, jsonify, Blueprint, make_response, g
+from flask import render_template, flash, redirect, url_for, request, current_app, Response, jsonify, Blueprint, make_response, g
 from app import app, db, bcrypt
 from app.forms import LoginForm, RegistrationForm, UpdateProfileForm, CreatePostForm, CommentForm
+from app.models import Post
 from flask_bcrypt import Bcrypt
 from werkzeug.security import check_password_hash
 from app.models import Usuario, Post, Comentario
 from werkzeug.urls import url_parse
 from datetime import datetime
-from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity, set_access_cookies, unset_jwt_cookies
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity, set_access_cookies, unset_jwt_cookies, verify_jwt_in_request
 from flask_jwt_extended.exceptions import NoAuthorizationError
 from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 
 jwt = JWTManager(app)
 users = Blueprint('users', __name__)
+
+@app.errorhandler(400)
+def handle_bad_request(e):
+    app.logger.error(f'Bad request: {e}')
+    return 'Bad request', 400
+
 
 @app.before_request
 def before_request():
@@ -63,56 +70,66 @@ def register():
         db.session.commit()
 
         access_token = create_access_token(identity=new_user.id)
-        response = make_response(redirect(url_for('index')))  # Redirige a la página deseada
-        set_access_cookies(response, access_token)  # Establece las cookies JWT
-        return response
+        # En lugar de establecer una cookie, simplemente devuelve el token de acceso en la respuesta JSON
+        return jsonify(access_token=access_token), 200
 
     return render_template('auth/register.html', form=form)
 
 
-from flask import Response
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    app.logger.debug("Solicitud de inicio de sesión recibida")
     if request.method == 'POST':
-        # Verificar si la solicitud es JSON
-        if request.is_json:
-            data = request.get_json()
-            username = data.get('username')
-            password = data.get('password')
-        else:
-            # Si no es JSON, asumir que es una solicitud de formulario
-            username = request.form.get('username')
-            password = request.form.get('password')
-
-        user = Usuario.query.filter_by(username=username).first()
-
-        if user and bcrypt.check_password_hash(user.bcrypt_password_hash, password):
-            access_token = create_access_token(identity=user.id)
+        current_app.logger.info('Inicio de solicitud POST /login')
+        try:
             if request.is_json:
-                # Respuesta para solicitudes de API
-                return jsonify(access_token=access_token), 200
+                data = request.get_json()
+                current_app.logger.info(f'Datos recibidos para el usuario {data.get("username")}')
+                username = data.get('username')
+                password = data.get('password')
             else:
-                # Respuesta para solicitudes de formulario web
-                # Aquí manejarías la sesión del usuario y redirigirías
-                return redirect(url_for('index'))
-        else:
+                username = request.form.get('username')
+                password = request.form.get('password')
+                current_app.logger.info(f'Datos recibidos para el usuario {username} desde formulario')
+
+            current_app.logger.info('Consultando la base de datos para el usuario')
+            user = Usuario.query.filter_by(username=username).first()
+
+            if user:
+                current_app.logger.info(f'Usuario {username} encontrado, verificando contraseña')
+                if bcrypt.check_password_hash(user.bcrypt_password_hash, password):
+                    access_token = create_access_token(identity=user.id)
+                    current_app.logger.info(f'Contraseña correcta, generando token para {username}')
+                    if request.is_json:
+                        return jsonify(access_token=access_token), 200
+                    else:
+                        return redirect(url_for('index'))
+                else:
+                    current_app.logger.warning(f'Contraseña incorrecta para el usuario {username}')
+            else:
+                current_app.logger.warning(f'Usuario {username} no encontrado')
+
             if request.is_json:
-                # Respuesta de error para solicitudes de API
                 return jsonify({"msg": "Bad username or password"}), 401
             else:
-                # Respuesta de error para solicitudes de formulario web
                 return render_template('login.html', error="Bad username or password")
+
+        except Exception as e:
+            current_app.logger.error(f'Error durante el inicio de sesión: {e}')
+            if request.is_json:
+                return jsonify({"msg": "Internal server error"}), 500
+            else:
+                return render_template('login.html', error="Internal server error")
     else:
-        # Método GET para mostrar el formulario de inicio de sesión
+        current_app.logger.info('Mostrando formulario de inicio de sesión')
         return render_template('login.html')
 
 @app.route('/logout')
 @jwt_required()
 def logout():
-    response = make_response(redirect(url_for('index')))
-    unset_jwt_cookies(response)  # Usa esto para eliminar las cookies JWT
-    return response
+    # Simplemente redirige al usuario al inicio o a la página de login
+    return redirect(url_for('login'))
+
 
 @app.route('/protected', methods=['GET'])
 @jwt_required()
@@ -125,18 +142,36 @@ def show_base():
     return render_template('base.html')
 
 @app.route('/create_post', methods=['GET', 'POST'])
-@jwt_required()
 def create_post():
+    # Crear una instancia de tu formulario
     form = CreatePostForm()
-    current_user_id = get_jwt_identity()
-    if form.validate_on_submit():
-        title = form.title.data
-        content = form.content.data
-        post = Post(title=title, content=content, user_id=current_user_id)
-        db.session.add(post)
-        db.session.commit()
-        flash('Post creado exitosamente.')
-        return redirect(url_for('index'))
+
+    # Verificar si es una solicitud POST y validar el formulario
+    if request.method == 'POST':
+        # Aquí se verifica manualmente la presencia del JWT en la solicitud
+        verify_jwt_in_request()
+
+        # Obtener el identificador del usuario actual del token JWT
+        current_user_id = get_jwt_identity()
+
+        # Procesar el formulario si es válido
+        if form.validate_on_submit():
+            # Extraer los datos del formulario
+            title = form.title.data
+            content = form.content.data
+
+            # Crear una nueva instancia de Post con los datos del formulario
+            post = Post(title=title, content=content, user_id=current_user_id)
+
+            # Añadir el nuevo post a la base de datos
+            db.session.add(post)
+            db.session.commit()
+
+            # Mostrar un mensaje de éxito y redirigir al usuario
+            flash('Post creado exitosamente.')
+            return redirect(url_for('index'))
+
+    # Si no es una solicitud POST o el formulario no es válido, renderizar el formulario
     return render_template('create_post.html', form=form)
 
 
