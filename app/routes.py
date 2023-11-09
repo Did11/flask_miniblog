@@ -69,23 +69,24 @@ def register():
     return render_template('auth/register.html', form=form)
 
 
-@users.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     
     if form.validate_on_submit():
         user = Usuario.query.filter_by(username=form.username.data).first()
         
-        if user and bcrypt.check_password_hash(user.password_hash, form.password.data):
+        if user and bcrypt.check_password_hash(user.bcrypt_password_hash, form.password.data):
             access_token = create_access_token(identity=user.id)
-            response = jsonify({'login': True, 'token': access_token})
-            set_access_cookies(response, access_token)
-            return response, 200
+            response = make_response(redirect(url_for('index')))  # Redirige a la página de inicio o a cualquier otra
+            set_access_cookies(response, access_token)  # Establece las cookies JWT
+            return response
         
         flash('Usuario o contraseña incorrectos.')
         return redirect(url_for('users.login'))
     
     return render_template('auth/login.html', form=form)
+
 
 
 @app.route('/logout')
